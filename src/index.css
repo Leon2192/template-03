@@ -1,0 +1,10 @@
+/* color de los bullets */
+.swiper-pagination-bullet {
+    background: #000 !important; /* negro */
+    opacity: 0.4; /* menos intensidad cuando no está activo */
+  }
+  
+  .swiper-pagination-bullet-active {
+    background: #000 !important; /* negro sólido para el activo */
+    opacity: 1;
+  }
