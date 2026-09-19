@@ -48,12 +48,13 @@ const mobileImage = "/images/imagenes/PORTADA2.webp";
       ref={ref}
       sx={{
         position: "relative",
-        height: "100vh",
-        width: "100vw",
+        height: "100svh",
+        width: "100%",
         margin: 0,
         padding: 0,
         backgroundImage: `url(${isMobile ? mobileImage : desktopImage})`,
-        backgroundSize: "cover",
+        backgroundSize: "contain",
+        backgroundColor: "#ffffff",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         display: "flex",
@@ -88,6 +89,7 @@ const mobileImage = "/images/imagenes/PORTADA2.webp";
   }}
 >
   <IconButton
+    aria-label={isPlaying ? "Pausar música" : "Reproducir música"}
     onClick={toggleAudio}
     sx={{
       backgroundColor: "rgba(255,255,255,0.7)",
@@ -170,7 +172,7 @@ const mobileImage = "/images/imagenes/PORTADA2.webp";
           },
         }}
       >
-        <a href="#info" style={{ color: "#000000", textDecoration: "none" }}>
+        <a href="#info" aria-label="Ver información de la ceremonia" style={{ color: "#000000", textDecoration: "none" }}>
           <KeyboardArrowDownIcon fontSize="inherit" />
         </a>
       </Box>

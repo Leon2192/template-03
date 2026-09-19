@@ -3,15 +3,12 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import "./App.css";
 
 import Hero from "./components/Hero/HeroPremium";
-import Countdown from "./components/CountDown/CountDownPremium";
 import InfoEvent from "./components/InfoEvent";
 import Gift from "./components/Gift";
 import Confirm from "./components/Confirm";
-import Dresscode from "./components/Dresscode";
-import SuggestSong from "./components/SugerirCancion";
-import Qr from "./components/QR";
 import Thanks from "./components/Thanks";
 import Fiesta from "./components/Fiesta";
+import InstallPrompt from "./components/InstallPrompt";
 
 
 function Loader() {
@@ -55,18 +52,17 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
-    return <Loader />;
-  }
-
   return (
     <>
+      <InstallPrompt />
+      {loading ? <Loader /> : <>
       <Hero />
       <InfoEvent />
       <Fiesta />
       <Confirm />
       <Gift />
       <Thanks/>
+      </>}
     </>
   );
 }

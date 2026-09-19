@@ -8,7 +8,7 @@ const Confirm = () => {
         minHeight: "40vh",
         py: 8,
         px: 2,
-        backgroundImage: "url('/images/modificaciones/FONDODRESS.webp')", // 👈 textura de fondo
+        backgroundColor: "#ffffff",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",

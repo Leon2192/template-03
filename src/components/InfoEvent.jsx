@@ -12,6 +12,7 @@ const InfoEvent = () => {
 
   return (
     <Box
+      id="info"
       ref={ref}
       sx={{
         position: "relative",

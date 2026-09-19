@@ -1,5 +1,4 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const Thanks = () => {
   const theme = useTheme();
@@ -15,9 +14,8 @@ const Thanks = () => {
         height: "50vh",
         m: 0,
         p: 0,
-        // En mobile: cover (llena y recorta). En desktop: contain (se ve completa).
         backgroundImage: `url(${isMobile ? mobileImage : desktopImage})`,
-        backgroundSize: isMobile ? "cover" : "contain",
+        backgroundSize: "contain",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         // Color de fondo para “letterboxing” cuando usamos contain
