@@ -105,17 +105,60 @@ test('installed iPhone does not show the banner', async ({ page }) => {
 test('portada remains fully visible on mobile and desktop', async ({ page }, testInfo) => {
   await page.goto('/');
   await expect(page.getByRole('link', { name: 'Ver información de la ceremonia' })).toBeVisible();
-  for (const width of [320, 390, 1440]) {
+  for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     const layout = await page.evaluate(() => {
       const hero = [...document.querySelectorAll('div')].find(element => getComputedStyle(element).backgroundImage.includes('PORTADA2.webp'));
-      return { fit: getComputedStyle(hero).backgroundSize, width: hero.getBoundingClientRect().width, viewport: window.innerWidth };
+      return { fit: getComputedStyle(hero).backgroundSize, width: hero.getBoundingClientRect().width, height: hero.getBoundingClientRect().height, viewport: window.innerWidth };
     });
     expect(layout.fit).toBe('contain');
     expect(layout.width).toBeLessThanOrEqual(layout.viewport);
+    expect(layout.height).toBeGreaterThanOrEqual(899);
     await page.screenshot({ path: testInfo.outputPath(`portada-${width}.png`) });
   }
   await page.getByRole('link', { name: 'Ver información de la ceremonia' }).click();
   await expect(page).toHaveURL(/#info$/);
   await expect(page.locator('#info')).toBeInViewport();
+});
+
+test.describe('tablet without small viewport units', () => {
+  test.use({ viewport: { width: 768, height: 1024 }, hasTouch: true, isMobile: true });
+
+  test('portada keeps its height when svh declarations are unsupported', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: 'Ver información de la ceremonia' })).toBeVisible();
+
+    // Simula únicamente la falta de soporte CSS de svh, no un Safari antiguo completo.
+    const imageLoaded = await page.evaluate(async () => {
+      function discardUnsupportedRules(sheet) {
+        for (let index = sheet.cssRules.length - 1; index >= 0; index -= 1) {
+          const rule = sheet.cssRules[index];
+          if (rule instanceof CSSSupportsRule && rule.conditionText.includes('svh')) {
+            sheet.deleteRule(index);
+          } else if (rule instanceof CSSStyleRule && rule.style.height.includes('svh')) {
+            rule.style.removeProperty('height');
+          } else if (rule.cssRules) {
+            discardUnsupportedRules(rule);
+          }
+        }
+      }
+      for (const sheet of document.styleSheets) discardUnsupportedRules(sheet);
+      const hero = [...document.querySelectorAll('div')].find(element => getComputedStyle(element).backgroundImage.includes('PORTADA2.webp'));
+      const image = new Image();
+      image.src = getComputedStyle(hero).backgroundImage.slice(5, -2);
+      await image.decode();
+      return image.naturalWidth > 0;
+    });
+    expect(imageLoaded).toBe(true);
+
+    for (const viewport of [{ width: 768, height: 1024 }, { width: 1024, height: 768 }]) {
+      await page.setViewportSize(viewport);
+      const height = await page.evaluate(() => {
+        const hero = [...document.querySelectorAll('div')].find(element => getComputedStyle(element).backgroundImage.includes('PORTADA2.webp'));
+        return hero.getBoundingClientRect().height;
+      });
+      expect(height).toBeGreaterThanOrEqual(viewport.height - 1);
+      await expect(page.getByRole('button', { name: 'Reproducir música' })).toBeInViewport();
+    }
+  });
 });

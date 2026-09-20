@@ -48,7 +48,12 @@ const mobileImage = "/images/imagenes/PORTADA2.webp";
       ref={ref}
       sx={{
         position: "relative",
-        height: "100svh",
+        // Los navegadores anteriores a svh necesitan una altura de respaldo:
+        // el fondo y los controles absolutos no dan altura al contenedor.
+        height: "100vh",
+        "@supports (height: 100svh)": {
+          height: "100svh",
+        },
         width: "100%",
         margin: 0,
         padding: 0,
